@@ -16,8 +16,25 @@
     if (e.persisted) location.reload();
   });
 </script>
-<meta name="description" content="Wedding invitation of Ahmed &amp; Alaa">
+<meta name="description" content="You are warmly invited to the wedding of Ahmed &amp; Alaa — Saturday, December 5, 2026 · Jewel Hotel, New Cairo">
+<link rel="canonical" href="https://ahmed-alaa-beta.vercel.app/">
+<!-- Link preview (WhatsApp / Facebook / Telegram / iMessage) — ضع الصورة preview.jpg جنب index.html -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ahmed &amp; Alaa">
+<meta property="og:url" content="https://ahmed-alaa-beta.vercel.app/">
 <meta property="og:title" content="The Wedding of Ahmed &amp; Alaa">
+<meta property="og:description" content="You are warmly invited to celebrate with us — Saturday, December 5, 2026 · Jewel Hotel, New Cairo">
+<meta property="og:image" content="https://ahmed-alaa-beta.vercel.app/preview.jpg?v=1">
+<meta property="og:image:secure_url" content="https://ahmed-alaa-beta.vercel.app/preview.jpg?v=1">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Wedding of Ahmed &amp; Alaa">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Wedding of Ahmed &amp; Alaa">
+<meta name="twitter:description" content="You are warmly invited to celebrate with us — Saturday, December 5, 2026 · Jewel Hotel, New Cairo">
+<meta name="twitter:image" content="https://ahmed-alaa-beta.vercel.app/preview.jpg?v=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <title>Wedding Invitation</title>
 <link rel="preload" as="image" href="img77.jpg" fetchpriority="high">
@@ -854,11 +871,31 @@ html.ar #fog i{animation-play-state:paused!important}
   var root=document.documentElement,btn=document.getElementById('autoBtn'),bar=document.getElementById('bar');
   var els=[document.getElementById('stage'),document.getElementById('rest')].filter(Boolean);
   var GPU=!!(els[0]&&els[0].animate);
-  var state='idle',raf,y,last,max=0,maxAt=0,animOn=false,queued=false;
+  var state='idle',raf,y,last,max=0,maxAt=0,animOn=false,queued=false,lastTarget=0;
   var anims=[],base=0,total=0,barT;
   function getMax(t){if(t-maxAt>400){max=Math.max(0,root.scrollHeight-innerHeight);maxAt=t}return max}
   function ui(){btn.classList.toggle('paused',state!=='running');btn.setAttribute('aria-label',state==='running'?'Pause auto-scroll':'Play auto-scroll')}
-  function onUser(e){if(btn.contains(e.target))return;pause()}
+  function onUser(e){
+    if(btn.contains(e.target))return;
+    /* اللمس بيتعالج من touchstart بس (pointerdown بتاع اللمس بيجي قبله) */
+    if(e.type==='pointerdown'&&e.pointerType==='touch')return;
+    /* لو السكرول شغال وبنلمس الشاشة: نوقف حركة اللمسة دي من التمرير الطبيعي،
+       عشان المتصفح مايرجّعنا لمكان قديم وإحنا بنثبّت المكان الحالي. السحبة اللي بعدها بتسكرول عادي */
+    if(e.type==='touchstart'&&state==='running'&&GPU&&e.cancelable&&!(e.target.closest&&e.target.closest('input,select,textarea,a,button,label')))e.preventDefault();
+    pause();
+  }
+  /* قفز فوري بدون smooth حتى لو الـCSS عامل scroll-behavior:smooth */
+  function jump(v){var p=root.style.scrollBehavior;root.style.scrollBehavior='auto';scrollTo(0,v);root.style.scrollBehavior=p}
+  /* لو المتصفح تجاهل تثبيت المكان (بيحصل أحيانًا والإصبع على الشاشة) نعيده بعد ما يرفع إصبعه */
+  function verify(tgt){
+    function chk(){
+      if(state==='running'||tgt-base<=40)return;
+      if(Math.abs(scrollY-base)<3&&Math.abs(scrollY-tgt)>40)jump(tgt);
+    }
+    var once=function(){setTimeout(chk,0)};
+    ['touchend','touchcancel','pointerup'].forEach(function(n){addEventListener(n,once,{once:true,passive:true})});
+    [120,400,900].forEach(function(t){setTimeout(chk,t)});
+  }
   var EV=['wheel','touchstart','pointerdown','keydown'];
 
   /* ---- تثبيت مكان السكرول الفعلي وإلغاء الـ transform ---- */
@@ -867,6 +904,7 @@ html.ar #fog i{animation-play-state:paused!important}
     clearInterval(barT);
     if(!anims.length)return;
     var sh=forceEnd?total:shift();
+    lastTarget=base+sh;
     scrollTo(0,base+sh);
     anims.forEach(function(a){a.onfinish=null;a.cancel()});anims=[];
     els.forEach(function(e){e.style.willChange=''});
@@ -885,6 +923,7 @@ html.ar #fog i{animation-play-state:paused!important}
     if(state==='wait'){state='paused';ui();return}
     if(state!=='running')return;
     state='paused';stopAll();ui();
+    if(GPU)verify(lastTarget);
   }
   function finish(){
     cancelAnimationFrame(raf);
@@ -926,7 +965,7 @@ html.ar #fog i{animation-play-state:paused!important}
   }
   btn.addEventListener('click',function(){state==='running'?pause():play()});
   /* أي لمسة/سكرول/ضغط من اليوزر (بره الزر) بيوقف السكرول، ومن الزر يكمّل من مكانه */
-  function arm(){EV.forEach(function(n){addEventListener(n,onUser,{capture:true,passive:true})})}
+  function arm(){EV.forEach(function(n){addEventListener(n,onUser,{capture:true,passive:n!=='touchstart'})})}
 
   document.addEventListener('invite:ready',function(){
     btn.classList.add('show');state='wait';ui();arm();
