@@ -412,6 +412,8 @@ html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 #rest #p7t .pv,#rest #p7t .pt{text-align:center;margin:0;line-height:1.4;color:var(--bur);text-wrap:balance}
 #rest #p7t .pv{font-weight:700;font-size:1.1em}
 #rest #p7t .pt{font-size:1em;margin-bottom:.9em;opacity:.9}
+/* first page: hide the "Tap the bow" text (element kept so the script still works) */
+#hint{display:none!important}
 /* motion: swaying sprigs, glinting date, soft glow on gold marks */
 .sec.on .dr svg{transform-origin:0 0;animation:sway 7s ease-in-out infinite alternate}
 .sec.on .dr.tr svg,.sec.on .dr.bl svg{animation-duration:8.5s;animation-delay:-2s}
