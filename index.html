@@ -773,7 +773,7 @@ html.so #fog i{animation-play-state:paused!important}
   cd();setInterval(cd,1000);
   var tt;function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('on')},3200)}
   // === ربط الـRSVP بجوجل شيت: حط رابط الـWeb App هنا (اللي بينتهي بـ /exec) ===
-  var SHEET_URL='https://script.google.com/macros/s/AKfycbwUexpcUxzUVfmzN9gt9fURdLPU9rNURCEBg74dhBd4EPx99Cbc2IGs3df9JLH_TcGX6Q/exec';
+  var SHEET_URL='https://script.google.com/macros/s/AKfycbxNPEJPldRJjzMUi64rAcXMOhsw68snxeOb2-RFiO0EbW7W492m1hu2F03E_CZP0JOeIg/exec';
   var busy=false;
   function setBusy(b){busy=b;['ry','rx'].forEach(function(i){var e=$(i);if(e){e.disabled=b;e.style.opacity=b?'.6':''}})}
   function rs(ok){if(busy)return;var el=$('rn'),n=el.value.trim();
@@ -944,7 +944,7 @@ html.ar #fog i{animation-play-state:paused!important}
 /* سكرول تلقائي هادي + زر إيقاف/تشغيل + ضبط سرعة الحركات مع سرعة السكرول
    الحركة بتتنفّذ بالـ GPU (transform) مش بسكرول الصفحة نفسه، عشان تفضل ناعمة حتى لو الصفحة تقيلة */
 (function(){
-  var SPEED=window.SCROLL_SPEED||90,DELAY=1200;               /* SPEED = بكسل في الثانية: زوّده للأسرع وقلّله للأبطأ */
+  var SPEED=window.SCROLL_SPEED||90,DELAY=800;               /* SPEED = بكسل في الثانية: زوّده للأسرع وقلّله للأبطأ */
   if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
   var root=document.documentElement,btn=document.getElementById('autoBtn'),bar=document.getElementById('bar');
   var els=[document.getElementById('stage'),document.getElementById('rest')].filter(Boolean);
